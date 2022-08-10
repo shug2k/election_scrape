@@ -1,2 +1,4 @@
 __pycache__
 scraped_sites
+.DS_Store
+processed_text
