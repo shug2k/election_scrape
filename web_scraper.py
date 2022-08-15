@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from os.path import exists
+from wordfreq import word_frequency
 import requests
 import re
 import json
@@ -46,11 +47,36 @@ def scrape_line(in_data: dict[str, str]) -> dict[str, str]:
     }
 
     site_data = parse_site(out_data['url'])
+    site_date['ngrams'] = process_ngrams(site_data['text'])
     for key, value in site_data.items():
         out_data[key] = value
     #print(out_data)
 
     return out_data
+
+
+def process_ngrams(raw_text: str) -> dict[int, [str, float]]:
+    ngrams  = {
+        1: {},
+        2: {}
+    }
+    words = raw_text.split(' ')
+
+    for i, word in enumerate(words):
+        print(i)
+        if word not in ngrams[1]:
+            ngrams[1][word] = [1, word_frequency(word, 'en')]
+        else:
+            ngrams[1][word][0] += 1
+        if i==0:
+            continue
+        bigram =  words[i-1] + ' ' + word
+        if bigram not in ngrams[2]:
+            bigram_freq = word_frequency(words[i-1], 'en') * word_frequency(word, 'en')
+            ngrams[2][bigram] = [1, bigram_freq]
+        else:
+            ngrams[2][bigram][0] += 1
+    return ngrams
 
 class LineProcessor:
     def __init__(self):
