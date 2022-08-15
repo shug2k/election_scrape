@@ -47,6 +47,7 @@ def scrape_line(in_data: dict[str, str]) -> dict[str, str]:
     }
 
     site_data = parse_site(out_data['url'])
+    site_date['ngrams'] = process_ngrams(site_data['text'])
     for key, value in site_data.items():
         out_data[key] = value
     #print(out_data)
