@@ -52,6 +52,27 @@ def scrape_line(in_data: dict[str, str]) -> dict[str, str]:
 
     return out_data
 
+
+def process_ngrams(raw_text: str) -> dict[int, str]:
+    ngrams  = {
+        1: {},
+        2: {}
+    }
+    words = raw_text.split(' ')
+    for word, i in enumerate(words):
+        if not(ngrams[1][word]):
+            ngrams[1][word] = 1
+        else:
+            ngrams[1][word] += 1
+        if i==0:
+            continue
+        bigram =  words[i-1] + ' ' + word
+        if not(ngrams[2][bigram]):
+            ngrams[2][bigram] = 1
+        else:
+            ngrams[2][bigram] += 1
+    return ngrams
+
 class LineProcessor:
     def __init__(self):
         self.entries = {}
