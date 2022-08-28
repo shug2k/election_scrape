@@ -17,7 +17,6 @@ def parse_site(url: str) -> dict[str, str]:
     html_titles = soup.find_all('h1')
     titles = [item.text.strip('\n').strip(' ') for item in html_titles if item.text != '']
     data['title'] = '\n'.join(titles)
-    #print(data['title'])
 
     html_links = soup.find_all('a')
     if html_links:
@@ -27,13 +26,11 @@ def parse_site(url: str) -> dict[str, str]:
             if link and 'http' in link:
                 link_set.add(link)
         data['links'] = list(link_set)
-    #print(data['links'])
 
     # parse paragraph text, which we assume has the main body of the article
     paragraphs = soup.find_all('p')
     text = [item.text for item in paragraphs if item.text != '']
     data['text'] = ' '.join(text)
-    #print(data['text'])
 
     return data
 
@@ -47,10 +44,9 @@ def scrape_line(in_data: dict[str, str]) -> dict[str, str]:
     }
 
     site_data = parse_site(out_data['url'])
-    site_date['ngrams'] = process_ngrams(site_data['text'])
+    site_data['ngrams'] = process_ngrams(site_data['text'])
     for key, value in site_data.items():
         out_data[key] = value
-    #print(out_data)
 
     return out_data
 
@@ -63,7 +59,6 @@ def process_ngrams(raw_text: str) -> dict[int, [str, float]]:
     words = raw_text.split(' ')
 
     for i, word in enumerate(words):
-        print(i)
         if word not in ngrams[1]:
             ngrams[1][word] = [1, word_frequency(word, 'en')]
         else:
